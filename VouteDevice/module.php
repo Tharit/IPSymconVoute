@@ -53,10 +53,10 @@ class VouteDevice extends IPSModule
         $config = json_decode($this->ReadPropertyString('config'), true);
         
         $module = file_get_contents(__DIR__ . '/module.html');
-        $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']));
-        $module = str_replace("'{{HAS_COLOR}}'", 'false');
-        $module = str_replace("'{{HAS_BRIGHTNESS}}'", 'true');
-        $module = str_replace("'{{HAS_TEMPERATURE}}'", 'true');
+        $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']), $module);
+        $module = str_replace("'{{HAS_COLOR}}'", 'false', $module);
+        $module = str_replace("'{{HAS_BRIGHTNESS}}'", 'true', $module);
+        $module = str_replace("'{{HAS_TEMPERATURE}}'", 'true', $module);
 
         return $module . $initialHandling;
     }
