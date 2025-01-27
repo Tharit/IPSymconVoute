@@ -17,6 +17,7 @@ class VouteDevice extends IPSModule
          $this->RegisterVariableBoolean("Status", "Status", "", 0);
 
          $this->RegisterPropertyInteger('script', '0');
+         $this->RegisterPropertyString('config', '{"segments":[]}');
 
          $this->EnableAction("Segments");
          $this->EnableAction("Brightness");
@@ -49,7 +50,13 @@ class VouteDevice extends IPSModule
     public function GetVisualizationTile() {
         $initialHandling = '<script>handleMessage(' . json_encode($this->GetFullUpdateMessage()) . ');</script>';
 
+        $config = json_decode($this->GetProperty('config'), true);
+        
         $module = file_get_contents(__DIR__ . '/module.html');
+        $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']));
+        $module = str_replace("'{{HAS_COLOR}}'", 'false');
+        $module = str_replace("'{{HAS_BRIGHTNESS}}'", 'true');
+        $module = str_replace("'{{HAS_TEMPERATURE}}'", 'true');
 
         return $module . $initialHandling;
     }
