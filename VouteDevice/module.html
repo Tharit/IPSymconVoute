@@ -42,7 +42,7 @@
     </style>
     <script>
         function handleMessage(data) {
-            const data = JSON.parse(data);
+            data = JSON.parse(data);
             for(let key in IPS.subscriptions) {
                 IPS.subscriptions[key].forEach(cb => cb(key, data[key]));
             }
@@ -69,7 +69,8 @@
                 requestAction(ident, value);
             }
         };
-
+  </script>
+  <script type="module">
         import '/user/lit.min.js';
         import iro from '/user/iro.min.js';
 
@@ -178,7 +179,7 @@
                         },
                     ]
                 });
-                if (!Config.color) {
+                if (!Config.hasColor) {
                     node.classList.add('disabled');
                 } else {
                     colorPicker.on('color:change', debounce((color) => {
@@ -214,7 +215,7 @@
                         },
                     ]
                 });
-                if (!Config.temperature) {
+                if (!Config.hasTemperature) {
                     node.classList.add('disabled');
                 } else {
                     temperaturePicker.on('color:change', debounce((color) => {
@@ -244,7 +245,7 @@
                         }
                     ]
                 });
-                if (!Config.brightness) {
+                if (!Config.hasBrightness) {
                     node.classList.add('disabled');
                 } else {
                     brightnessPicker.on('color:change', debounce((color) => {
@@ -321,14 +322,14 @@
 `;
             }
         }
-        customElements.define('lamp', Lamp);
+        customElements.define('ips-lamp', Lamp);
     </script>
 </head>
 
 <body>
     <div class="header"></div>
     <div class="container" id="content">
-        <lamp></lamp>
+        <ips-lamp></ips-lamp>
     </div>
 </body>
 

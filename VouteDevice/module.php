@@ -12,7 +12,7 @@ class VouteDevice extends IPSModule
 
          $this->RegisterVariableInteger("Segments", "Segments", "", 0);
          $this->RegisterVariableInteger("Brightness", "Brightness", "", 0);
-         $this->RegisterVariableInteger("ColorTemperature", "ColorTemperature", "", 0);
+         $this->RegisterVariableInteger("Temperature", "Temperature", "", 0);
          $this->RegisterVariableInteger("Auto", "Auto", "", 0);
          $this->RegisterVariableBoolean("Status", "Status", "", 0);
 
@@ -21,7 +21,7 @@ class VouteDevice extends IPSModule
 
          $this->EnableAction("Segments");
          $this->EnableAction("Brightness");
-         $this->EnableAction("ColorTemperature");
+         $this->EnableAction("Temperature");
          $this->EnableAction("Auto");
          $this->EnableAction("Status");
     }
@@ -34,7 +34,7 @@ class VouteDevice extends IPSModule
 
     public function RequestAction($Ident, $Value)
     {
-        if(in_array($Ident, ['Segments', 'Status', 'ColorTemperature', 'Brightness', 'Auto'])) {
+        if(in_array($Ident, ['Segments', 'Status', 'Temperature', 'Brightness', 'Auto'])) {
             $script = $this->ReadPropertyInteger('script');
             if($script && @IPS_GetScript($script)) {
                 IPS_RunScriptEx($script, [
@@ -75,7 +75,7 @@ class VouteDevice extends IPSModule
         return json_encode([
             'Segments' => $this->GetValue('Segments'),
             'Status' => $this->GetValue('Status'),
-            'ColorTemperature' => $this->GetValue('ColorTemperature'),
+            'Temperature' => $this->GetValue('Temperature'),
             'Brightness' => $this->GetValue('Brightness'),
             'Auto' => $this->GetValue('Auto')
         ]);
