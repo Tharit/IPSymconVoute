@@ -1,0 +1,12 @@
+{
+	"id": "{3B7ABD48-7685-4D15-B001-409D33D82441}",
+	"name": "VouteDevice",
+	"type": 3,
+	"vendor": "MK",
+	"aliases": [],
+	"parentRequirements": [],
+	"childRequirements": [],
+	"implemented": [],
+	"prefix": "V",
+    "url": "https://github.com/tharit/IPSymconVoute"
+}

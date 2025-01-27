@@ -1,0 +1,12 @@
+{
+    "id": "{141DC9C8-706D-498D-853A-F00EA31557FF}",
+    "name": "Voute",
+    "author": "Martin Kleinhans",
+    "url": "https://github.com/tharit/IPSymconVoute",
+    "compatibility": {
+        "version": "8.0"
+    },
+    "version": "1.0",
+    "build": 1,
+    "date": 1
+}
