@@ -37,7 +37,7 @@ class VouteDevice extends IPSModule
         if(in_array($Ident, ['Segments', 'Status', 'Temperature', 'Brightness', 'Auto'])) {
             $script = $this->ReadPropertyInteger('script');
             if($script && @IPS_GetScript($script)) {
-                IPS_RunScriptEx($script, [
+                IPS_RunScriptWaitEx($script, [
                     "VARIABLE" => IPS_GetObjectIDByIdent($Ident, $this->InstanceID),
                     "VALUE" => $Value
                 ]);

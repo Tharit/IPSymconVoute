@@ -1,4 +1,9 @@
 {
     "elements": [
+        {
+            "name": "script",
+            "type": "SelectScript",
+            "caption": "Action handler script"
+        }
     ]
 }
