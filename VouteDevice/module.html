@@ -66,7 +66,7 @@
                 }
                 this.subscriptions[ident].push(cb);
                 if(this.data) {
-                    cb(key, data[key]);
+                    cb(ident, data[ident]);
                 }
             },
 
