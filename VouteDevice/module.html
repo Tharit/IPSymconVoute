@@ -273,14 +273,9 @@
                         }
                     });
 
-                    let segments = [];
-                    try {
-                        segments = JSON.parse(Config.layout);
-                        if (!Array.isArray(segments)) {
-                            segments = [];
-                        }
-                    } catch (_e) {
-                        /* do nothing */
+                    let segments = Config.layout;
+                    if (!Array.isArray(segments)) {
+                        segments = [];
                     }
                     const wrapper = document.createElement('div');
                     node.appendChild(wrapper);
