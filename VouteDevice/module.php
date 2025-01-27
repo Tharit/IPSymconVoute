@@ -50,7 +50,7 @@ class VouteDevice extends IPSModule
     public function GetVisualizationTile() {
         $initialHandling = '<script>handleMessage(' . json_encode($this->GetFullUpdateMessage()) . ');</script>';
 
-        $config = json_decode($this->GetProperty('config'), true);
+        $config = json_decode($this->ReadPropertyString('config'), true);
         
         $module = file_get_contents(__DIR__ . '/module.html');
         $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']));
