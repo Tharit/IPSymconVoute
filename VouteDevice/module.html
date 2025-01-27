@@ -99,16 +99,18 @@
         export default class Lamp extends Lit.LitElement {
             static get styles() {
                 return Lit.css`
-#temperature, #brightness {
-    margin-top: 10px;
-}
+		* {
+		box-sizing: border-box;
+		}
 .wrapper {
+	height: 100%;
     padding: 10px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
 }
+
 .disabled {
     opacity: 0.3;
     filter: grayscale(1);
@@ -117,11 +119,23 @@
 .hidden {
     display: none;
 }
+#buttons {
+	height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+align-items: center;
+}
+
+.btn {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background-color: rgb(100,100,100, 0.5);
+    height: 30%;
+    width: 100%;
+}
 #segments {
-    width: 208px;
     margin-auto;
-    height: 208px;
-    margin-top: 10px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px;
     background-color: rgb(100,100,100, 0.5);
@@ -169,14 +183,27 @@
 
             firstUpdated() {
                 const width = Math.max(280, this.parentElement.getBoundingClientRect().width - 40);
+		const height = 180;//width;
+		const w1 = (2/10.4) * width;
+		const w2 = (6/10.4) * width;
+		const w3 = (1/10.4) * width;
+		const w4 = (1/10.4) * width;
 
                 let draggingColor, draggingBrightness, draggingTemperature;
                 let node;
 
+                node = this.shadowRoot.getElementById("buttons");
+		node.style.width = w1 + 'px';
+		node.style.height = height + 'px';
+
+                node = this.shadowRoot.getElementById("large");
+		node.style.width = w2 + 'px';
+
                 // wheel
                 node = this.shadowRoot.getElementById("color");
                 const colorPicker = new iro.ColorPicker(node, {
-                    width: width,
+                    width: height,
+		    boxHeight: height,
                     color: "rgb(255, 0, 0)",
                     borderWidth: 1,
                     borderColor: "#fff",
@@ -186,6 +213,7 @@
                         },
                     ]
                 });
+                node.classList.add('hidden');
                 if (!Config.hasColor) {
                     node.classList.add('disabled');
                 } else {
@@ -204,18 +232,19 @@
 
                 // Temperature
                 node = this.shadowRoot.getElementById("temperature");
+		node.style.width = w3 + 'px';
                 const temperaturePicker = new iro.ColorPicker(node, {
-                    width: width,
+                    width: height,
                     color: "rgb(255, 0, 0)",
                     borderWidth: 1,
                     borderColor: "#fff",
-                    layoutDirection: 'vertical',
+                    layoutDirection: 'horizontal',
                     layout: [
                         {
                             component: iro.ui.Slider,
                             options: {
                                 sliderType: 'kelvin',
-                                sliderSize: 40,
+                                //sliderSize: 40,
                                 minTemperature: 2000,
                                 maxTemperature: 6500
                             }
@@ -238,11 +267,13 @@
 
                 // brightness
                 node = this.shadowRoot.getElementById("brightness");
+		node.style.width = w4 + 'px';
                 const brightnessPicker = new iro.ColorPicker(node, {
-                    width,
+                    width: height,
                     color: "rgb(255, 255, 255)",
                     borderWidth: 1,
                     borderColor: "#fff",
+		    layoutDirection: 'horizontal',
                     layout: [
                         {
                             component: iro.ui.Slider,
@@ -269,6 +300,8 @@
                 }
 
                 node = this.shadowRoot.getElementById("segments");
+		node.style.width = w2 + 'px';
+		node.style.height = height + 'px';
                 if (Config.layout) {
                     let valueSegments = 0;
                     IPS.subscribe('Segments', (id, value) => {
@@ -316,10 +349,17 @@
             render() {
                 return Lit.html`
 <div class="wrapper">
-    <div id="color"></div>
+    <div id="buttons">
+    	<div class="btn">1</div>
+    	<div class="btn">2</div>
+    	<div class="btn">3</div>
+    </div>
+    <div id="large">
+	    <div id="color"></div>
+	    <div id="segments"></div>
+    </div>
     <div id="temperature"></div>
     <div id="brightness"></div>
-    <div id="segments"></div>
 </div>
 `;
             }
@@ -331,7 +371,7 @@
 <body>
     <div class="header"></div>
     <div class="container" id="content">
-        <ips-lamp></ips-lamp>
+        <ips-lamp style="width:100%"></ips-lamp>
     </div>
 </body>
 
