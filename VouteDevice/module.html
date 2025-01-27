@@ -43,6 +43,7 @@
     <script>
         function handleMessage(data) {
             data = JSON.parse(data);
+            IPS.data = data;
             for(let key in IPS.subscriptions) {
                 IPS.subscriptions[key].forEach(cb => cb(key, data[key]));
             }
@@ -57,12 +58,16 @@
 
         const IPS = {
             subscriptions: {},
+            data: null,
 
             subscribe: function(ident, cb) {
                 if(!this.subscriptions[ident]) {
                     this.subscriptions[ident] = [];
                 }
                 this.subscriptions[ident].push(cb);
+                if(this.data) {
+                    cb(key, data[key]);
+                }
             },
 
             set: function(ident, value) {
