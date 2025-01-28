@@ -2,6 +2,7 @@
 
 <head>
     <script src="/icons.js" crossorigin="anonymous"></script>
+    <script src="/user/iro.min.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="initial-scale=1.0, width=device-width, height=device-height">
     <style>
         * {
@@ -34,17 +35,75 @@
             width: 100%;
             height: 100%;
 
-            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
-            justify-content: start;
+
             padding-top: 50px;
+        }
+
+        .disabled {
+            opacity: 0.3;
+            filter: grayscale(1);
+            pointer-events: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #buttons {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background-color: rgb(100, 100, 100, 0.5);
+            height: 30%;
+            width: 100%;
+        }
+
+        #segments {
+            margin-auto;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background-color: rgb(100, 100, 100, 0.5);
+            padding: 4px;
+        }
+
+        #segments>div {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #segments>div>div {
+            position: absolute;
+            border: 1px solid white;
+            background-color: gray;
+            border-radius: 4px;
+        }
+
+        .circle {
+            border-radius: 100% !important;
+            width: 16%;
+            height: 16%;
+        }
+
+        .active {
+            background-color: orange !important;
         }
     </style>
     <script>
         function handleMessage(data) {
             data = JSON.parse(data);
             IPS.data = data;
-            for(let key in IPS.subscriptions) {
+            for (let key in IPS.subscriptions) {
                 IPS.subscriptions[key].forEach(cb => cb(key, data[key]));
             }
         }
@@ -60,26 +119,22 @@
             subscriptions: {},
             data: null,
 
-            subscribe: function(ident, cb) {
-                if(!this.subscriptions[ident]) {
+            subscribe: function (ident, cb) {
+                if (!this.subscriptions[ident]) {
                     this.subscriptions[ident] = [];
                 }
                 this.subscriptions[ident].push(cb);
-                if(this.data) {
+                if (this.data) {
                     setTimeout(() => {
                         cb(ident, this.data[ident]);
                     }, 0);
                 }
             },
 
-            set: function(ident, value) {
+            set: function (ident, value) {
                 requestAction(ident, value);
             }
         };
-  </script>
-  <script type="module">
-        import '/user/lit.min.js';
-        import iro from '/user/iro.min.js';
 
         function debounce(func, timeout) {
             let timer;
@@ -96,282 +151,187 @@
             };
         }
 
-        export default class Lamp extends Lit.LitElement {
-            static get styles() {
-                return Lit.css`
-		* {
-		box-sizing: border-box;
-		}
-.wrapper {
-	height: 100%;
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
+        function render() {
+            const width = Math.max(280, this.parentElement.getBoundingClientRect().width - 40);
+            const height = 180;//width;
+            const w1 = (2 / 10.4) * width;
+            const w2 = (6 / 10.4) * width;
+            const w3 = (1 / 10.4) * width;
+            const w4 = (1 / 10.4) * width;
 
-.disabled {
-    opacity: 0.3;
-    filter: grayscale(1);
-    pointer-events: none;
-}
-.hidden {
-    display: none;
-}
-#buttons {
-	height: 100%;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-align-items: center;
-}
+            let draggingColor, draggingBrightness, draggingTemperature;
+            let node;
 
-.btn {
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    background-color: rgb(100,100,100, 0.5);
-    height: 30%;
-    width: 100%;
-}
-#segments {
-    margin-auto;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    background-color: rgb(100,100,100, 0.5);
-    padding: 4px;
-}
-#segments>div {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-#segments>div>div {
-    position: absolute;
-    border: 1px solid white;
-    background-color: gray;
-    border-radius: 4px;
-}
-.circle {
-    border-radius: 100% !important;
-    width: 16%;
-    height: 16%;
-}
-.active {
-    background-color: orange !important;
-}
-`;
-            }
+            node = this.shadowRoot.getElementById("buttons");
+            node.style.width = w1 + 'px';
+            node.style.height = height + 'px';
 
-            static get properties() {
-                return {}
-            }
+            node = this.shadowRoot.getElementById("large");
+            node.style.width = w2 + 'px';
 
-            constructor() {
-                super();
-            }
-
-            disconnectedCallback() {
-                super.disconnectedCallback();
-                console.log('unmounted');
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
-                console.log('mounted');
-            }
-
-            firstUpdated() {
-                const width = Math.max(280, this.parentElement.getBoundingClientRect().width - 40);
-		const height = 180;//width;
-		const w1 = (2/10.4) * width;
-		const w2 = (6/10.4) * width;
-		const w3 = (1/10.4) * width;
-		const w4 = (1/10.4) * width;
-
-                let draggingColor, draggingBrightness, draggingTemperature;
-                let node;
-
-                node = this.shadowRoot.getElementById("buttons");
-		node.style.width = w1 + 'px';
-		node.style.height = height + 'px';
-
-                node = this.shadowRoot.getElementById("large");
-		node.style.width = w2 + 'px';
-
-                // wheel
-                node = this.shadowRoot.getElementById("color");
-                const colorPicker = new iro.ColorPicker(node, {
-                    width: height,
-		    boxHeight: height,
-                    color: "rgb(255, 0, 0)",
-                    borderWidth: 1,
-                    borderColor: "#fff",
-                    layout: [
-                        {
-                            component: iro.ui.Wheel,
-                        },
-                    ]
+            // wheel
+            node = this.shadowRoot.getElementById("color");
+            const colorPicker = new iro.ColorPicker(node, {
+                width: height,
+                boxHeight: height,
+                color: "rgb(255, 0, 0)",
+                borderWidth: 1,
+                borderColor: "#fff",
+                layout: [
+                    {
+                        component: iro.ui.Wheel,
+                    },
+                ]
+            });
+            node.classList.add('hidden');
+            if (!Config.hasColor) {
+                node.classList.add('disabled');
+            } else {
+                colorPicker.on('color:change', debounce((color) => {
+                    IPS.set('Color', parseInt(color.hexString.substr(1), 16));
+                }, 500));
+                colorPicker.on('input:start', () => draggingColor = true);
+                colorPicker.on('input:end', () => draggingColor = false);
+                IPS.subscribe('Color', (id, value) => {
+                    if (draggingColor) return;
+                    const color = new iro.Color('#' + value.toString(16).padStart(6, '0'));
+                    color.setChannel('hsv', 'v', 100);
+                    colorPicker.setColors([color]);
                 });
-                node.classList.add('hidden');
-                if (!Config.hasColor) {
-                    node.classList.add('disabled');
-                } else {
-                    colorPicker.on('color:change', debounce((color) => {
-                        IPS.set('Color', parseInt(color.hexString.substr(1), 16));
-                    }, 500));
-                    colorPicker.on('input:start', () => draggingColor = true);
-                    colorPicker.on('input:end', () => draggingColor = false);
-                    IPS.subscribe('Color', (id, value) => {
-                        if (draggingColor) return;
-                        const color = new iro.Color('#' + value.toString(16).padStart(6, '0'));
-                        color.setChannel('hsv', 'v', 100);
-                        colorPicker.setColors([color]);
-                    });
-                }
+            }
 
-                // Temperature
-                node = this.shadowRoot.getElementById("temperature");
-		node.style.width = w3 + 'px';
-                const temperaturePicker = new iro.ColorPicker(node, {
-                    width: height,
-                    color: "rgb(255, 0, 0)",
-                    borderWidth: 1,
-                    borderColor: "#fff",
-                    layoutDirection: 'horizontal',
-                    layout: [
-                        {
-                            component: iro.ui.Slider,
-                            options: {
-                                sliderType: 'kelvin',
-                                //sliderSize: 40,
-                                minTemperature: 2000,
-                                maxTemperature: 6500
-                            }
-                        },
-                    ]
-                });
-                if (!Config.hasTemperature) {
-                    node.classList.add('disabled');
-                } else {
-                    temperaturePicker.on('color:change', debounce((color) => {
-                        IPS.set('Temperature', Math.round(((color.kelvin - 2000) / (6500 - 2000)) * 100));//Math.round(1000000/color.kelvin));
-                    }, 500));
-                    temperaturePicker.on('input:start', () => draggingTemperature = true);
-                    temperaturePicker.on('input:end', () => draggingTemperature = false);
-                    IPS.subscribe('Temperature', (id, value) => {
-                        if (draggingTemperature) return;
-                        temperaturePicker.setColors([iro.Color.kelvinToRgb((value / 100) * (6500 - 2000) + 2000)]);
-                    });
-                }
-
-                // brightness
-                node = this.shadowRoot.getElementById("brightness");
-		node.style.width = w4 + 'px';
-                const brightnessPicker = new iro.ColorPicker(node, {
-                    width: height,
-                    color: "rgb(255, 255, 255)",
-                    borderWidth: 1,
-                    borderColor: "#fff",
-		    layoutDirection: 'horizontal',
-                    layout: [
-                        {
-                            component: iro.ui.Slider,
-                            options: {
-                                sliderType: 'value'
-                            }
+            // Temperature
+            node = this.shadowRoot.getElementById("temperature");
+            node.style.width = w3 + 'px';
+            const temperaturePicker = new iro.ColorPicker(node, {
+                width: height,
+                color: "rgb(255, 0, 0)",
+                borderWidth: 1,
+                borderColor: "#fff",
+                layoutDirection: 'horizontal',
+                layout: [
+                    {
+                        component: iro.ui.Slider,
+                        options: {
+                            sliderType: 'kelvin',
+                            //sliderSize: 40,
+                            minTemperature: 2000,
+                            maxTemperature: 6500
                         }
-                    ]
+                    },
+                ]
+            });
+            if (!Config.hasTemperature) {
+                node.classList.add('disabled');
+            } else {
+                temperaturePicker.on('color:change', debounce((color) => {
+                    IPS.set('Temperature', Math.round(((color.kelvin - 2000) / (6500 - 2000)) * 100));//Math.round(1000000/color.kelvin));
+                }, 500));
+                temperaturePicker.on('input:start', () => draggingTemperature = true);
+                temperaturePicker.on('input:end', () => draggingTemperature = false);
+                IPS.subscribe('Temperature', (id, value) => {
+                    if (draggingTemperature) return;
+                    temperaturePicker.setColors([iro.Color.kelvinToRgb((value / 100) * (6500 - 2000) + 2000)]);
                 });
-                if (!Config.hasBrightness) {
-                    node.classList.add('disabled');
-                } else {
-                    brightnessPicker.on('color:change', debounce((color) => {
-                        IPS.set('Brightness', Math.max(1, Math.round(color.hsv.v)));//Math.round((color.hsv.v/100)*255));
-                    }, 500));
-                    brightnessPicker.on('input:start', () => draggingBrightness = true);
-                    brightnessPicker.on('input:end', () => draggingBrightness = false);
-                    IPS.subscribe('Brightness', (id, value) => {
-                        if (draggingBrightness) return;
-                        const color = new iro.Color('#000');
-                        color.setChannel('hsv', 'v', value);//Math.round((Math.max(0, value)/255)*100));
-                        brightnessPicker.setColors([color]);
-                    });
-                }
+            }
 
-                node = this.shadowRoot.getElementById("segments");
-		node.style.width = w2 + 'px';
-		node.style.height = height + 'px';
-                if (Config.layout) {
-                    let valueSegments = 0;
-                    IPS.subscribe('Segments', (id, value) => {
-                        valueSegments = value;
-                        const wrapper = node.children[0];
-                        for (let i = 0, n = wrapper.children.length; i < n; i++) {
-                            const btn = wrapper.children[i];
-                            btn.classList.toggle('active', (valueSegments & ((1 << i))));
+            // brightness
+            node = this.shadowRoot.getElementById("brightness");
+            node.style.width = w4 + 'px';
+            const brightnessPicker = new iro.ColorPicker(node, {
+                width: height,
+                color: "rgb(255, 255, 255)",
+                borderWidth: 1,
+                borderColor: "#fff",
+                layoutDirection: 'horizontal',
+                layout: [
+                    {
+                        component: iro.ui.Slider,
+                        options: {
+                            sliderType: 'value'
                         }
-                    });
-
-                    let segments = Config.layout;
-                    if (!Array.isArray(segments)) {
-                        segments = [];
                     }
-                    const wrapper = document.createElement('div');
-                    node.appendChild(wrapper);
-                    for (let i = 0, n = segments.length; i < n; i++) {
-                        const segment = segments[i];
-                        const btn = document.createElement('div');
+                ]
+            });
+            if (!Config.hasBrightness) {
+                node.classList.add('disabled');
+            } else {
+                brightnessPicker.on('color:change', debounce((color) => {
+                    IPS.set('Brightness', Math.max(1, Math.round(color.hsv.v)));//Math.round((color.hsv.v/100)*255));
+                }, 500));
+                brightnessPicker.on('input:start', () => draggingBrightness = true);
+                brightnessPicker.on('input:end', () => draggingBrightness = false);
+                IPS.subscribe('Brightness', (id, value) => {
+                    if (draggingBrightness) return;
+                    const color = new iro.Color('#000');
+                    color.setChannel('hsv', 'v', value);//Math.round((Math.max(0, value)/255)*100));
+                    brightnessPicker.setColors([color]);
+                });
+            }
+
+            node = this.shadowRoot.getElementById("segments");
+            node.style.width = w2 + 'px';
+            node.style.height = height + 'px';
+            if (Config.layout) {
+                let valueSegments = 0;
+                IPS.subscribe('Segments', (id, value) => {
+                    valueSegments = value;
+                    const wrapper = node.children[0];
+                    for (let i = 0, n = wrapper.children.length; i < n; i++) {
+                        const btn = wrapper.children[i];
                         btn.classList.toggle('active', (valueSegments & ((1 << i))));
-                        if (segment.width && segment.height) {
-                            btn.classList.add('rect');
-                            btn.style.left = segment.x + '%';
-                            btn.style.top = segment.y + '%';
-                            btn.style.width = segment.width + '%';
-                            btn.style.height = segment.height + '%';
-                        } else {
-                            btn.classList.add('circle');
-                            btn.style.left = (segment.x - 8) + '%';
-                            btn.style.top = (segment.y - 8) + '%';
-                        }
-                        btn.onclick = () => {
-                            valueSegments = valueSegments ^ (1 << i);
-                            btn.classList.toggle('active', (valueSegments & ((1 << i))));
-                            IPS.set('Segments', valueSegments);
-                        };
-                        wrapper.appendChild(btn);
                     }
-                } else {
-                    node.classList.add('hidden');
-                }
-            }
+                });
 
-            render() {
-                return Lit.html`
-<div class="wrapper">
-    <div id="buttons">
-    	<div class="btn">1</div>
-    	<div class="btn">2</div>
-    	<div class="btn">3</div>
-    </div>
-    <div id="large">
-	    <div id="color"></div>
-	    <div id="segments"></div>
-    </div>
-    <div id="temperature"></div>
-    <div id="brightness"></div>
-</div>
-`;
+                let segments = Config.layout;
+                if (!Array.isArray(segments)) {
+                    segments = [];
+                }
+                const wrapper = document.createElement('div');
+                node.appendChild(wrapper);
+                for (let i = 0, n = segments.length; i < n; i++) {
+                    const segment = segments[i];
+                    const btn = document.createElement('div');
+                    btn.classList.toggle('active', (valueSegments & ((1 << i))));
+                    if (segment.width && segment.height) {
+                        btn.classList.add('rect');
+                        btn.style.left = segment.x + '%';
+                        btn.style.top = segment.y + '%';
+                        btn.style.width = segment.width + '%';
+                        btn.style.height = segment.height + '%';
+                    } else {
+                        btn.classList.add('circle');
+                        btn.style.left = (segment.x - 8) + '%';
+                        btn.style.top = (segment.y - 8) + '%';
+                    }
+                    btn.onclick = () => {
+                        valueSegments = valueSegments ^ (1 << i);
+                        btn.classList.toggle('active', (valueSegments & ((1 << i))));
+                        IPS.set('Segments', valueSegments);
+                    };
+                    wrapper.appendChild(btn);
+                }
+            } else {
+                node.classList.add('hidden');
             }
         }
-        customElements.define('ips-lamp', Lamp);
     </script>
 </head>
 
 <body>
     <div class="header"></div>
     <div class="container" id="content">
-        <ips-lamp style="width:100%"></ips-lamp>
+        <div id="buttons">
+            <div class="btn">1</div>
+            <div class="btn">2</div>
+            <div class="btn">3</div>
+        </div>
+        <div id="large">
+            <div id="color"></div>
+            <div id="segments"></div>
+        </div>
+        <div id="temperature"></div>
+        <div id="brightness"></div>
     </div>
 </body>
 
