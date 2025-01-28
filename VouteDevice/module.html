@@ -206,10 +206,10 @@
             });
             node.appendChild(btnAuto);
 
+            let tab = 'segments';
+            btnColor = document.createElement('div');
+            btnColor.classList.add('btn');
             if(Config.hasColor) {
-                let tab = 'segments';
-                btnColor = document.createElement('div');
-                btnColor.classList.add('btn');
                 btnColor.innerHTML = `<i class="fa-light fa-palette fa-2xl"></i>`;
                 btnColor.onclick = () => {
                     document.getElementById(tab).classList.add('hidden');
@@ -219,8 +219,10 @@
                     let icon = tab === 'segments' ? 'palette' : 'chart-tree-map';
                     btnColor.innerHTML = `<i class="fa-light fa-${icon} fa-2xl"></i>`;
                 };
-                node.appendChild(btnColor);
+            } else {
+                btnColor.classList.add('hidden');
             }
+            node.appendChild(btnColor);
 
             node = document.getElementById("large");
             node.style.width = w2 + 'px';
