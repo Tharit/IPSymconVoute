@@ -12,16 +12,15 @@ class VouteDevice extends IPSModule
 
          $this->RegisterVariableInteger("Segments", "Segments", "", 0);
          $this->RegisterVariableInteger("Brightness", "Brightness", "", 0);
-         $this->RegisterVariableInteger("Temperature", "Temperature", "", 0);
          $this->RegisterVariableInteger("Auto", "Auto", "", 0);
          $this->RegisterVariableBoolean("Status", "Status", "", 0);
 
          $this->RegisterPropertyInteger('script', '0');
          $this->RegisterPropertyString('config', '{"segments":[]}');
+         $this->RegisterPropertyString('type', 'cct');
 
          $this->EnableAction("Segments");
          $this->EnableAction("Brightness");
-         $this->EnableAction("Temperature");
          $this->EnableAction("Auto");
          $this->EnableAction("Status");
     }
@@ -29,12 +28,27 @@ class VouteDevice extends IPSModule
     public function ApplyChanges() {
         parent::ApplyChanges();
 
+        $type = $this->ReadPropertyString('type');
+        if($type === 'cct' || $type === 'rgbcct') {
+            $this->RegisterVariableInteger("Temperature", "Temperature", "", 0);
+            $this->EnableAction("Temperature");   
+        } else {
+            $this->UnregisterVariable("Temperature");
+        }
+
+        if($type === 'rgb' || $type === 'rgbcct') {
+            $this->RegisterVariableInteger("Color", "Color", "", 0);
+            $this->EnableAction("Color");
+        } else {
+            $this->UnregisterVariable("Color");
+        }
+
         $this->UpdateVisualizationValue($this->GetFullUpdateMessage());
     }
 
     public function RequestAction($Ident, $Value)
     {
-        if(in_array($Ident, ['Segments', 'Status', 'Temperature', 'Brightness', 'Auto'])) {
+        if(in_array($Ident, ['Segments', 'Status', 'Temperature', 'Color', 'Brightness', 'Auto'])) {
             $script = $this->ReadPropertyInteger('script');
             if($script && @IPS_GetScript($script)) {
                 IPS_RunScriptWaitEx($script, [
@@ -52,11 +66,13 @@ class VouteDevice extends IPSModule
 
         $config = json_decode($this->ReadPropertyString('config'), true);
         
+        $type = $this->ReadPropertyString('type');
+
         $module = file_get_contents(__DIR__ . '/module.html');
         $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']), $module);
-        $module = str_replace("'{{HAS_COLOR}}'", 'false', $module);
+        $module = str_replace("'{{HAS_COLOR}}'", $type === 'rgb' || $type === 'rgbcct' ? 'true' : 'false', $module);
         $module = str_replace("'{{HAS_BRIGHTNESS}}'", 'true', $module);
-        $module = str_replace("'{{HAS_TEMPERATURE}}'", 'true', $module);
+        $module = str_replace("'{{HAS_TEMPERATURE}}'", $type === 'cct' || $type === 'rgbcct' ? 'true' : 'false', $module);
 
         return $module . $initialHandling;
     }

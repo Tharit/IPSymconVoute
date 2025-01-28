@@ -35,11 +35,14 @@
             width: 100%;
             height: 100%;
 
+            display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
 
             padding-top: 50px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         .disabled {
@@ -61,6 +64,9 @@
         }
 
         .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 4px;
             background-color: rgb(100, 100, 100, 0.5);
@@ -95,8 +101,17 @@
             height: 16%;
         }
 
-        .active {
+        #segments .active {
             background-color: orange !important;
+        }
+
+        .btn.active {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn.active svg {
+            filter: drop-shadow(0 0 4px yellow);
+            color: orange;
         }
     </style>
     <script>
@@ -152,7 +167,7 @@
         }
 
         function render() {
-            const width = Math.max(280, this.parentElement.getBoundingClientRect().width - 40);
+            const width = Math.max(280, document.body.getBoundingClientRect().width - 40);
             const height = 180;//width;
             const w1 = (2 / 10.4) * width;
             const w2 = (6 / 10.4) * width;
@@ -162,31 +177,70 @@
             let draggingColor, draggingBrightness, draggingTemperature;
             let node;
 
-            node = this.shadowRoot.getElementById("buttons");
+            node = document.getElementById("buttons");
             node.style.width = w1 + 'px';
             node.style.height = height + 'px';
 
-            node = this.shadowRoot.getElementById("large");
+            let btn;
+            btn = document.createElement('div');
+            btn.classList.add('btn');
+            btn.innerHTML = `<i class="fa-light fa-power-off fa-2xl"></i>`;
+            btn.onclick = () => {
+                requestAction('Status', !IPS.data.Status);
+            };
+            node.appendChild(btn);
+            IPS.subscribe('Status', () => btn.classList.toggle('active', IPS.data.Status));
+
+            let btnAuto = document.createElement('div');
+            btnAuto.classList.add('btn');
+            btnAuto.innerHTML = `<i class="fa-light fa-arrows-spin fa-2xl"></i>`;
+            btnAuto.onclick = () => {
+                requestAction('Auto', 3);
+            };
+            IPS.subscribe('Auto', () => {
+                let icon = 'user';
+                if ((IPS.data.Auto & 4)) icon = 'house-night';
+                else if ((IPS.data.Auto & 1) && (IPS.data.Auto & 2)) icon = 'arrows-spin';
+                btnAuto.classList.toggle('disabled', icon === 'arrows-spin');
+                btnAuto.innerHTML = `<i class="fa-light fa-${icon} fa-2xl"></i>`;
+            });
+            node.appendChild(btnAuto);
+
+            if(Config.hasColor) {
+                let tab = 'segments';
+                btnColor = document.createElement('div');
+                btnColor.classList.add('btn');
+                btnColor.innerHTML = `<i class="fa-light fa-palette fa-2xl"></i>`;
+                btnColor.onclick = () => {
+                    document.getElementById(tab).classList.add('hidden');
+                    tab = tab === 'segments' ? 'color' : 'segments';
+                    document.getElementById(tab).classList.remove('hidden');
+
+                    let icon = tab === 'segments' ? 'palette' : 'chart-tree-map';
+                    btnColor.innerHTML = `<i class="fa-light fa-${icon} fa-2xl"></i>`;
+                };
+                node.appendChild(btnColor);
+            }
+
+            node = document.getElementById("large");
             node.style.width = w2 + 'px';
 
             // wheel
-            node = this.shadowRoot.getElementById("color");
-            const colorPicker = new iro.ColorPicker(node, {
-                width: height,
-                boxHeight: height,
-                color: "rgb(255, 0, 0)",
-                borderWidth: 1,
-                borderColor: "#fff",
-                layout: [
-                    {
-                        component: iro.ui.Wheel,
-                    },
-                ]
-            });
-            node.classList.add('hidden');
-            if (!Config.hasColor) {
-                node.classList.add('disabled');
-            } else {
+            node = document.getElementById("color");
+            if (Config.hasColor) {
+                const colorPicker = new iro.ColorPicker(node, {
+                    width: height,
+                    boxHeight: height,
+                    color: "rgb(255, 0, 0)",
+                    borderWidth: 1,
+                    borderColor: "#fff",
+                    layout: [
+                        {
+                            component: iro.ui.Wheel,
+                        },
+                    ]
+                });
+            
                 colorPicker.on('color:change', debounce((color) => {
                     IPS.set('Color', parseInt(color.hexString.substr(1), 16));
                 }, 500));
@@ -198,10 +252,12 @@
                     color.setChannel('hsv', 'v', 100);
                     colorPicker.setColors([color]);
                 });
+            } else {
+                node.classList.add('hidden');
             }
 
             // Temperature
-            node = this.shadowRoot.getElementById("temperature");
+            node = document.getElementById("temperature");
             node.style.width = w3 + 'px';
             const temperaturePicker = new iro.ColorPicker(node, {
                 width: height,
@@ -236,7 +292,7 @@
             }
 
             // brightness
-            node = this.shadowRoot.getElementById("brightness");
+            node = document.getElementById("brightness");
             node.style.width = w4 + 'px';
             const brightnessPicker = new iro.ColorPicker(node, {
                 width: height,
@@ -269,7 +325,7 @@
                 });
             }
 
-            node = this.shadowRoot.getElementById("segments");
+            node = document.getElementById("segments");
             node.style.width = w2 + 'px';
             node.style.height = height + 'px';
             if (Config.layout) {
@@ -315,6 +371,9 @@
                 node.classList.add('hidden');
             }
         }
+        setTimeout(() => {
+            render();
+        }, 0);
     </script>
 </head>
 
@@ -322,9 +381,6 @@
     <div class="header"></div>
     <div class="container" id="content">
         <div id="buttons">
-            <div class="btn">1</div>
-            <div class="btn">2</div>
-            <div class="btn">3</div>
         </div>
         <div id="large">
             <div id="color"></div>
