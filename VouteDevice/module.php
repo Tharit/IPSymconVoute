@@ -50,12 +50,18 @@ class VouteDevice extends IPSModule
             $this->UnregisterVariable("Color");
         }
 
+        if($type === 'rgbcct') {
+            $this->RegisterVariableInteger("Mode", "Mode", "", 0);
+        } else {
+            $this->UnregisterVariable("Mode");
+        }
+
         $this->UpdateVisualizationValue($this->GetFullUpdateMessage());
     }
 
     public function RequestAction($Ident, $Value)
     {
-        if(in_array($Ident, ['Segments', 'Status', 'Temperature', 'Color', 'Brightness', 'Auto'])) {
+        if(in_array($Ident, ['Segments', 'Status', 'Temperature', 'Color', 'Mode', 'Brightness', 'Auto'])) {
             $script = $this->ReadPropertyInteger('script');
             if($script && @IPS_GetScript($script)) {
                 IPS_RunScriptWaitEx($script, [
