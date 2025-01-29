@@ -12,12 +12,12 @@ class VouteDevice extends IPSModule
 
          $this->RegisterVariableInteger("Segments", "Segments", "", 0);
          $this->RegisterVariableInteger("Brightness", "Brightness", "", 0);
-         $this->RegisterVariableInteger("Auto", "Auto", "", 0);
          $this->RegisterVariableBoolean("Status", "Status", "", 0);
 
          $this->RegisterPropertyInteger('script', '0');
          $this->RegisterPropertyString('config', '{"segments":[]}');
          $this->RegisterPropertyString('type', 'cct');
+         $this->RegisterPropertyBoolean('autoAdjust', true);
 
          $this->EnableAction("Segments");
          $this->EnableAction("Brightness");
@@ -27,6 +27,13 @@ class VouteDevice extends IPSModule
 
     public function ApplyChanges() {
         parent::ApplyChanges();
+
+        $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
+        if($autoAdjust) {
+            $this->RegisterVariableInteger("Auto", "Auto", "", 0);
+        } else {
+            $this->UnregisterVariable("Auto");
+        }
 
         $type = $this->ReadPropertyString('type');
         if($type === 'cct' || $type === 'rgbcct') {
@@ -67,9 +74,11 @@ class VouteDevice extends IPSModule
         $config = json_decode($this->ReadPropertyString('config'), true);
         
         $type = $this->ReadPropertyString('type');
+        $autoAdjust = $this->ReadPropertyString('autoAdjust');
 
         $module = file_get_contents(__DIR__ . '/module.html');
         $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']), $module);
+        $module = str_replace("'{{HAS_AUTO}}'", $autoAdjust ? 'true' : 'false', $module);
         $module = str_replace("'{{HAS_COLOR}}'", $type === 'rgb' || $type === 'rgbcct' ? 'true' : 'false', $module);
         $module = str_replace("'{{HAS_BRIGHTNESS}}'", 'true', $module);
         $module = str_replace("'{{HAS_TEMPERATURE}}'", $type === 'cct' || $type === 'rgbcct' ? 'true' : 'false', $module);

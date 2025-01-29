@@ -20,8 +20,17 @@
                 {
                     "caption": "RGB (Color)",
                     "value": "rgb"
+                },
+                {
+                    "caption": "Single Color",
+                    "value": "single"
                 }
             ]
+        },
+        {
+            "name": "autoAdjust",
+            "type": "CheckBox",
+            "caption": "Automatically adjust brightness & color temperature"
         }
     ]
 }
