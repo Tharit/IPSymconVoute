@@ -80,7 +80,7 @@ class VouteDevice extends IPSModule
         $config = json_decode($this->ReadPropertyString('config'), true);
         
         $type = $this->ReadPropertyString('type');
-        $autoAdjust = $this->ReadPropertyString('autoAdjust');
+        $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
 
         $module = file_get_contents(__DIR__ . '/module.html');
         $module = str_replace("'{{LAYOUT}}'", json_encode($config['segments']), $module);
