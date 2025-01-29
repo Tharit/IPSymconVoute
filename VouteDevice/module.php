@@ -103,12 +103,20 @@ class VouteDevice extends IPSModule
     // private methods
 
     private function GetFullUpdateMessage() {
+        $type = $this->ReadPropertyString('type');
+        $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
+
+        $temperature = ($type === 'cct' || $type === 'rgbcct') ? $this->GetValue('Temperature') : 0;
+        $color = ($type === 'rgb' || $type === 'rgbcct') ? $this->GetValue('Color') : 0;
+        $auto = ($autoAdjust) ? $this->GetValue('Auto') : 0;
+
         return json_encode([
             'Segments' => $this->GetValue('Segments'),
             'Status' => $this->GetValue('Status'),
-            'Temperature' => $this->GetValue('Temperature'),
+            'Temperature' => $temperature,
+            'Color' => $color,
             'Brightness' => $this->GetValue('Brightness'),
-            'Auto' => $this->GetValue('Auto')
+            'Auto' => $auto
         ]);
     }
 }
