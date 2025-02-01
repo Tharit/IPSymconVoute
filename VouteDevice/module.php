@@ -42,13 +42,22 @@ class VouteDevice extends IPSModule
                 'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
                 'OPTIONS' => json_encode([[ // json
                     'Value' => 1,
-                    'Caption' => 'Day'
+                    'Caption' => 'Day',
+                    'IconActive' => false,
+                    'Icon' => '',
+                    'Color' => 0
                 ],[
                     'Value' => 2,
-                    'Caption' => 'Night'
+                    'Caption' => 'Night',
+                    'IconActive' => false,
+                    'Icon' => '',
+                    'Color' => 0
                 ],[
                     'Value' => 0,
-                    'Caption' => 'Manual'
+                    'Caption' => 'Manual',
+                    'IconActive' => false,
+                    'Icon' => '',
+                    'Color' => 0
                 ]])
              ], 1);
              $this->EnableAction("Auto");
