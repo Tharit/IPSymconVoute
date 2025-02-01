@@ -38,30 +38,20 @@ class VouteDevice extends IPSModule
 
         $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
         if($autoAdjust) {
-            $this->RegisterVariableInteger("Auto", "Auto", "", 1);
-            $this->EnableAction("Auto");
             $this->RegisterVariableInteger("Auto", "Auto", [
                 'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
-                'OPTIONS' => [[
+                'OPTIONS' => json_encode([[ // json
                     'Value' => 1,
-                    'Caption' => 'Day',
-                    'IconActive' => false,
-                    'Icon' => '',
-                    'Color' => 0
+                    'Caption' => 'Day'
                 ],[
                     'Value' => 2,
-                    'Caption' => 'Night',
-                    'IconActive' => false,
-                    'Icon' => '',
-                    'Color' => 0
+                    'Caption' => 'Night'
                 ],[
                     'Value' => 0,
-                    'Caption' => 'Manual',
-                    'IconActive' => false,
-                    'Icon' => '',
-                    'Color' => 0
-                ]]
+                    'Caption' => 'Manual'
+                ]])
              ], 1);
+             $this->EnableAction("Auto");
         } else {
             $this->UnregisterVariable("Auto");
         }
