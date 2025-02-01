@@ -4,9 +4,9 @@
 	"type": 3,
 	"vendor": "MK",
 	"aliases": [],
-	"parentRequirements": [],
+	"parentRequirements": ["{B74131F4-1164-4C35-8DCE-0852BF258544}"],
 	"childRequirements": [],
-	"implemented": [],
+	"implemented": ["{65824503-3661-4D70-8B9B-E0227C12C451}"],
 	"prefix": "V",
     "url": "https://github.com/tharit/IPSymconVoute"
 }

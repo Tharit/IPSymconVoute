@@ -8,6 +8,8 @@ class VouteDevice extends IPSModule
          // Never delete this line!
          parent::Create();
 
+         $this->RequireParent('{B74131F4-1164-4C35-8DCE-0852BF258544}'); // VouteCoordinator
+
          $this->SetVisualizationType(1);
 
          $this->RegisterVariableInteger("Segments", "Segments", "", 0);
