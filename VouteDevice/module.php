@@ -8,7 +8,7 @@ class VouteDevice extends IPSModule
          // Never delete this line!
          parent::Create();
 
-         $this->RequireParent('{B74131F4-1164-4C35-8DCE-0852BF258544}'); // VouteCoordinator
+         $this->RequireParent('{A4F98949-29AB-4E9D-9CFE-6172C65F29E1}'); // VouteCoordinator
 
          $this->SetVisualizationType(1);
 
