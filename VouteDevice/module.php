@@ -44,19 +44,19 @@ class VouteDevice extends IPSModule
                 'OPTIONS' => json_encode([[
                     'Value' => 0,
                     'Caption' => 'Manual',
-                    'IconActive' => false,
+                    'IconActive' => true,
                     'Icon' => 'user',
                     'Color' => 13750737
                 ],[
                     'Value' => 1,
                     'Caption' => 'Day',
-                    'IconActive' => false,
+                    'IconActive' => true,
                     'Icon' => 'arrows-spin',
                     'Color' => 7708671
                 ],[
                     'Value' => 2,
                     'Caption' => 'Night',
-                    'IconActive' => false,
+                    'IconActive' => true,
                     'Icon' => 'house-night',
                     'Color' => 16765813
                 ]])
