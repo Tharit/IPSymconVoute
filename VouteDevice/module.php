@@ -40,7 +40,7 @@ class VouteDevice extends IPSModule
         if($autoAdjust) {
             $this->RegisterVariableInteger("Auto", "Auto", "", 1);
             $this->EnableAction("Auto");
-            $this->RegisterVariableInteger("Auto", "Auto", "", [
+            $this->RegisterVariableInteger("Auto", "Auto", [
                 'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
                 'OPTIONS' => [[
                     'VALUE' => 1,
