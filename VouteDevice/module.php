@@ -12,10 +12,15 @@ class VouteDevice extends IPSModule
 
          $this->SetVisualizationType(1);
 
+         $this->RegisterVariableBoolean("Status", "Status", [
+            'PRESENTATION' => VARIABLE_PRESENTATION_SWITCH
+         ], 0);
          $this->RegisterVariableInteger("Segments", "Segments", "", 0);
-         $this->RegisterVariableInteger("Brightness", "Brightness", "", 0);
-         $this->RegisterVariableBoolean("Status", "Status", "", 0);
-
+         $this->RegisterVariableInteger("Brightness", "Brightness", [
+            'PRESENTATION' => VARIABLE_PRESENTATION_SLIDER,
+            'SUFFIX' => ' %'
+         ], 2);
+         
          $this->RegisterPropertyInteger('script', '0');
          $this->RegisterPropertyString('config', '{"segments":[]}');
          $this->RegisterPropertyString('type', 'cct');
@@ -24,6 +29,8 @@ class VouteDevice extends IPSModule
          $this->EnableAction("Segments");
          $this->EnableAction("Brightness");
          $this->EnableAction("Status");
+
+         IPS_SetHidden($this->GetIDForIdent('Segments'), true);
     }
 
     public function ApplyChanges() {
@@ -31,7 +38,19 @@ class VouteDevice extends IPSModule
 
         $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
         if($autoAdjust) {
-            $this->RegisterVariableInteger("Auto", "Auto", "", 0);
+            $this->RegisterVariableInteger("Auto", "Auto", [
+                'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
+                'OPTIONS' => [[
+                    'VALUE' => 1,
+                    'LABEL' => 'Day'
+                ],[
+                    'VALUE' => 2,
+                    'LABEL' => 'Night'
+                ],[
+                    'VALUE' => 0,
+                    'LABEL' => 'Manual'
+                ]]
+             ], 1);
             $this->EnableAction("Auto");
         } else {
             $this->UnregisterVariable("Auto");
@@ -39,14 +58,18 @@ class VouteDevice extends IPSModule
 
         $type = $this->ReadPropertyString('type');
         if($type === 'cct' || $type === 'rgbcct') {
-            $this->RegisterVariableInteger("Temperature", "Temperature", "", 0);
+            $this->RegisterVariableInteger("Temperature", "Temperature", [
+                'PRESENTATION' => VARIABLE_PRESENTATION_SLIDER
+             ], 3);
             $this->EnableAction("Temperature");   
         } else {
             $this->UnregisterVariable("Temperature");
         }
 
         if($type === 'rgb' || $type === 'rgbcct') {
-            $this->RegisterVariableInteger("Color", "Color", "", 0);
+            $this->RegisterVariableInteger("Color", "Color", [
+                'PRESENTATION' => VARIABLE_PRESENTATION_COLOR
+             ], 4);
             $this->EnableAction("Color");
         } else {
             $this->UnregisterVariable("Color");
@@ -54,6 +77,7 @@ class VouteDevice extends IPSModule
 
         if($type === 'rgbcct') {
             $this->RegisterVariableInteger("Mode", "Mode", "", 0);
+            IPS_SetHidden($this->GetIDForIdent('Mode'), true);
         } else {
             $this->UnregisterVariable("Mode");
         }
