@@ -40,7 +40,13 @@ class VouteDevice extends IPSModule
         if($autoAdjust) {
             $this->RegisterVariableInteger("Auto", "Auto", [
                 'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
-                'OPTIONS' => json_encode([[ // json
+                'OPTIONS' => json_encode([[
+                    'Value' => 0,
+                    'Caption' => 'Manual',
+                    'IconActive' => false,
+                    'Icon' => '',
+                    'Color' => 13750737
+                ],[
                     'Value' => 1,
                     'Caption' => 'Day',
                     'IconActive' => false,
@@ -52,12 +58,6 @@ class VouteDevice extends IPSModule
                     'IconActive' => false,
                     'Icon' => '',
                     'Color' => 16765813
-                ],[
-                    'Value' => 0,
-                    'Caption' => 'Manual',
-                    'IconActive' => false,
-                    'Icon' => '',
-                    'Color' => 13750737
                 ]])
              ], 1);
              $this->EnableAction("Auto");
