@@ -23,7 +23,6 @@ class VouteDevice extends IPSModule
 
          $this->EnableAction("Segments");
          $this->EnableAction("Brightness");
-         $this->EnableAction("Auto");
          $this->EnableAction("Status");
     }
 
@@ -33,6 +32,7 @@ class VouteDevice extends IPSModule
         $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
         if($autoAdjust) {
             $this->RegisterVariableInteger("Auto", "Auto", "", 0);
+            $this->EnableAction("Auto");
         } else {
             $this->UnregisterVariable("Auto");
         }

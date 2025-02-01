@@ -19,15 +19,6 @@
             overflow: hidden;
         }
 
-        .header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background-color: #222;
-        }
-
         .container {
 	   font-size: 12pt;
 
@@ -69,19 +60,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 4px;
-            background-color: rgb(100, 100, 100, 0.5);
+            background-color: rgb(125, 125, 125, 0.2);
             height: 30%;
             width: 100%;
+	    color: var(--accent-color);
         }
 
         #segments {
             margin-auto;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 4px;
-            background-color: rgb(100, 100, 100, 0.5);
-            padding: 4px;
+            background-color: rgb(125, 125, 125, 0.2);
+            padding: 8px;
         }
 
         #segments>div {
@@ -104,7 +94,7 @@
         }
 
         #segments .active {
-            background-color: orange !important;
+            background-color: var(--accent-color) !important;
         }
 
         .btn.active {
@@ -116,8 +106,7 @@
         }
 
         .btn.active svg {
-            filter: drop-shadow(0 0 4px yellow);
-            color: orange;
+            filter: drop-shadow(0 0 4px var(--accent-color));
         }
     </style>
     <script>
@@ -246,7 +235,7 @@
                     boxHeight: height,
                     color: "rgb(255, 0, 0)",
                     borderWidth: 1,
-                    borderColor: "#fff",
+                    borderColor: "var(--content-color)",
                     layout: [
                         {
                             component: iro.ui.Wheel,
@@ -275,7 +264,7 @@
                 width: height,
                 color: "rgb(255, 0, 0)",
                 borderWidth: 1,
-                borderColor: "#fff",
+                borderColor: "var(--content-color)",
                 layoutDirection: 'horizontal',
                 layout: [
                     {
@@ -310,7 +299,7 @@
                 width: height,
                 color: "rgb(255, 255, 255)",
                 borderWidth: 1,
-                borderColor: "#fff",
+                borderColor: "var(--content-color)",
                 layoutDirection: 'horizontal',
                 layout: [
                     {
@@ -390,7 +379,6 @@
 </head>
 
 <body>
-    <div class="header"></div>
     <div class="container" id="content">
         <div id="buttons">
         </div>
