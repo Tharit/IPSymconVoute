@@ -1,0 +1,36 @@
+{
+    "elements": [
+        {
+            "name": "script",
+            "type": "SelectScript",
+            "caption": "Action handler script"
+        },{
+            "type": "Select",
+            "name": "type",
+            "caption": "Device Type",
+            "options": [
+                {
+                    "caption": "CCT (Tunable White)",
+                    "value": "cct"
+                },
+                {
+                    "caption": "RGB CCT (Color & Tunable White)",
+                    "value": "rgbcct"
+                },
+                {
+                    "caption": "RGB (Color)",
+                    "value": "rgb"
+                },
+                {
+                    "caption": "Single Color",
+                    "value": "single"
+                }
+            ]
+        },
+        {
+            "name": "autoAdjust",
+            "type": "CheckBox",
+            "caption": "Automatically adjust brightness & color temperature"
+        }
+    ]
+}
