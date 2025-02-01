@@ -197,7 +197,7 @@
                 IPS.subscribe('Auto', () => {
                     let icon = 'user';
                     if (IPS.data.Auto === 2) icon = 'house-night';
-                    else if (PS.data.Auto === 1) icon = 'arrows-spin';
+                    else if (IPS.data.Auto === 1) icon = 'arrows-spin';
                     btnAuto.classList.toggle('disabled', icon === 'arrows-spin');
                     btnAuto.innerHTML = `<i class="fa-light fa-${icon} fa-2xl"></i>`;
                 });
