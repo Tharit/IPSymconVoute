@@ -38,6 +38,8 @@ class VouteDevice extends IPSModule
 
         $autoAdjust = $this->ReadPropertyBoolean('autoAdjust');
         if($autoAdjust) {
+            $this->RegisterVariableInteger("Auto", "Auto", "", 1);
+            $this->EnableAction("Auto");
             $this->RegisterVariableInteger("Auto", "Auto", [
                 'PRESENTATION' => VARIABLE_PRESENTATION_ENUMERATION,
                 'OPTIONS' => [[
@@ -60,7 +62,6 @@ class VouteDevice extends IPSModule
                     'Color' => 0
                 ]]
              ], 1);
-             $this->EnableAction("Auto");
         } else {
             $this->UnregisterVariable("Auto");
         }
