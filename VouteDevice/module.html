@@ -192,12 +192,12 @@
             if(Config.hasAuto) {
                 btnAuto.innerHTML = `<i class="fa-light fa-arrows-spin fa-2xl"></i>`;
                 btnAuto.onclick = () => {
-                    requestAction('Auto', 3);
+                    requestAction('Auto', 1);
                 };
                 IPS.subscribe('Auto', () => {
                     let icon = 'user';
-                    if ((IPS.data.Auto & 4)) icon = 'house-night';
-                    else if ((IPS.data.Auto & 1) && (IPS.data.Auto & 2)) icon = 'arrows-spin';
+                    if (IPS.data.Auto === 2) icon = 'house-night';
+                    else if (PS.data.Auto === 1) icon = 'arrows-spin';
                     btnAuto.classList.toggle('disabled', icon === 'arrows-spin');
                     btnAuto.innerHTML = `<i class="fa-light fa-${icon} fa-2xl"></i>`;
                 });
