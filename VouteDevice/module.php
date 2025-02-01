@@ -45,19 +45,19 @@ class VouteDevice extends IPSModule
                     'Value' => 0,
                     'Caption' => 'Manual',
                     'IconActive' => true,
-                    'Icon' => 'user',
+                    'IconValue' => 'user',
                     'Color' => 13750737
                 ],[
                     'Value' => 1,
                     'Caption' => 'Day',
                     'IconActive' => true,
-                    'Icon' => 'arrows-spin',
+                    'IconValue' => 'arrows-spin',
                     'Color' => 7708671
                 ],[
                     'Value' => 2,
                     'Caption' => 'Night',
                     'IconActive' => true,
-                    'Icon' => 'house-night',
+                    'IconValue' => 'house-night',
                     'Color' => 16765813
                 ]])
              ], 1);
