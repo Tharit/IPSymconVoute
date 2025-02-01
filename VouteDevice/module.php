@@ -20,7 +20,8 @@ class VouteDevice extends IPSModule
             'PRESENTATION' => VARIABLE_PRESENTATION_SLIDER,
             'SUFFIX' => ' %'
          ], 2);
-         
+         IPS_SetIcon($this->GetIDForIdent('Brightness'), 'signal');
+
          $this->RegisterPropertyInteger('script', '0');
          $this->RegisterPropertyString('config', '{"segments":[]}');
          $this->RegisterPropertyString('type', 'cct');
@@ -44,19 +45,19 @@ class VouteDevice extends IPSModule
                     'Value' => 0,
                     'Caption' => 'Manual',
                     'IconActive' => false,
-                    'Icon' => '',
+                    'Icon' => 'user',
                     'Color' => 13750737
                 ],[
                     'Value' => 1,
                     'Caption' => 'Day',
                     'IconActive' => false,
-                    'Icon' => '',
+                    'Icon' => 'arrows-spin',
                     'Color' => 7708671
                 ],[
                     'Value' => 2,
                     'Caption' => 'Night',
                     'IconActive' => false,
-                    'Icon' => '',
+                    'Icon' => 'house-night',
                     'Color' => 16765813
                 ]])
              ], 1);
@@ -70,6 +71,7 @@ class VouteDevice extends IPSModule
             $this->RegisterVariableInteger("Temperature", "Temperature", [
                 'PRESENTATION' => VARIABLE_PRESENTATION_SLIDER
              ], 3);
+            IPS_SetIcon($this->GetIDForIdent('Temperature'), 'temperature-full');
             $this->EnableAction("Temperature");   
         } else {
             $this->UnregisterVariable("Temperature");
@@ -79,6 +81,7 @@ class VouteDevice extends IPSModule
             $this->RegisterVariableInteger("Color", "Color", [
                 'PRESENTATION' => VARIABLE_PRESENTATION_COLOR
              ], 4);
+             IPS_SetIcon($this->GetIDForIdent('Color'), 'palette');
             $this->EnableAction("Color");
         } else {
             $this->UnregisterVariable("Color");
