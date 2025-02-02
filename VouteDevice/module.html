@@ -348,25 +348,29 @@
                 node.appendChild(wrapper);
                 for (let i = 0, n = segments.length; i < n; i++) {
                     const segment = segments[i];
-                    const btn = document.createElement('div');
-                    btn.classList.toggle('active', (valueSegments & ((1 << i))));
-                    if (segment.width && segment.height) {
-                        btn.classList.add('rect');
-                        btn.style.left = segment.x + '%';
-                        btn.style.top = segment.y + '%';
-                        btn.style.width = segment.width + '%';
-                        btn.style.height = segment.height + '%';
-                    } else {
-                        btn.classList.add('circle');
-                        btn.style.left = (segment.x - 8) + '%';
-                        btn.style.top = (segment.y - 8) + '%';
-                    }
-                    btn.onclick = () => {
-                        valueSegments = valueSegments ^ (1 << i);
+                    const shapes = Array.isArray(segment) ? segment : [segment];
+                    for(let j = 0, m = shapes.length; j < m; j++) {
+                        const shape = shapes[j];
+                        const btn = document.createElement('div');
                         btn.classList.toggle('active', (valueSegments & ((1 << i))));
-                        IPS.set('Segments', valueSegments);
-                    };
-                    wrapper.appendChild(btn);
+                        if (shape.width && shape.height) {
+                            btn.classList.add('rect');
+                            btn.style.left = shape.x + '%';
+                            btn.style.top = shape.y + '%';
+                            btn.style.width = shape.width + '%';
+                            btn.style.height = shape.height + '%';
+                        } else {
+                            btn.classList.add('circle');
+                            btn.style.left = (shape.x - 8) + '%';
+                            btn.style.top = (shape.y - 8) + '%';
+                        }
+                        btn.onclick = () => {
+                            valueSegments = valueSegments ^ (1 << i);
+                            btn.classList.toggle('active', (valueSegments & ((1 << i))));
+                            IPS.set('Segments', valueSegments);
+                        };
+                        wrapper.appendChild(btn);
+                    }
                 }
             } else {
                 node.classList.add('hidden');
