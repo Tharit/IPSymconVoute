@@ -336,7 +336,7 @@
                     const wrapper = node.children[0];
                     for (let i = 0, n = wrapper.children.length; i < n; i++) {
                         const btn = wrapper.children[i];
-                        btn.classList.toggle('active', (valueSegments & ((1 << i))));
+                        btn.classList.toggle('active', (valueSegments & ((1 << btn.dataset.index))));
                     }
                 });
 
@@ -364,9 +364,13 @@
                             btn.style.left = (shape.x - 8) + '%';
                             btn.style.top = (shape.y - 8) + '%';
                         }
+                        btn.dataset.index = i;
                         btn.onclick = () => {
                             valueSegments = valueSegments ^ (1 << i);
-                            btn.classList.toggle('active', (valueSegments & ((1 << i))));
+                            for (let i = 0, n = wrapper.children.length; i < n; i++) {
+                                const btn = wrapper.children[i];
+                                btn.classList.toggle('active', (valueSegments & ((1 << btn.dataset.index))));
+                            }
                             IPS.set('Segments', valueSegments);
                         };
                         wrapper.appendChild(btn);
